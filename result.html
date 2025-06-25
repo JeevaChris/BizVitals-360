@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Assessment Result</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="result-bg">
+  <div class="result-box">
+    <h2>Your Assessment Results</h2>
+    <ul id="score-list"></ul>
+    <div style="text-align:center; margin-top:20px;">
+      <a href="report.html" class="start-btn">View Detailed Report</a>
+    </div>
+  </div>
+
+  <script>
+    const answers = JSON.parse(localStorage.getItem("assessmentAnswers")) || {};
+    const categories = ["strategy", "marketing", "operations", "finance", "people"];
+    const scores = { strategy: 0, marketing: 0, operations: 0, finance: 0, people: 0 };
+    const labels = {
+      strategy: "Strategy",
+      marketing: "Marketing",
+      operations: "Operations",
+      finance: "Finance",
+      people: "People & Compliance"
+    };
+
+    for (let i = 1; i <= 30; i++) {
+      const value = answers[`q${i}`];
+      const categoryIndex = Math.floor((i - 1) / 6);
+      const category = categories[categoryIndex];
+      if (value === "Yes") scores[category] += 2;
+      else if (value === "In Process") scores[category] += 1;
+    }
+
+    const list = document.getElementById("score-list");
+    let total = 0;
+
+    const weakCategories = [];
+    for (const cat of categories) {
+      const score = scores[cat];
+      if (score < 7) weakCategories.push(cat);
+      const li = document.createElement("li");
+      li.textContent = `${labels[cat]}: ${score} / 12`;
+      list.appendChild(li);
+      total += score;
+    }
+
+    const percentage = ((total / 60) * 100).toFixed(2);
+    const totalLi = document.createElement("li");
+    totalLi.style.fontWeight = "bold";
+    totalLi.textContent = `Total Score: ${total} / 60 (${percentage}%)`;
+    list.appendChild(totalLi);
+
+    localStorage.setItem("weakCategories", JSON.stringify(weakCategories));
+  </script>
+</body>
+</html>

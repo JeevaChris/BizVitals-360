@@ -1,0 +1,33 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to BizVitals 360</title>
+  <link rel="stylesheet" href="style.css">
+</head><style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: url('index-bg.jpg') no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+  }
+</style>
+
+<body class="index-bg">
+  <script>
+    if (localStorage.getItem("loggedIn") !== "true") {
+      window.location.href = "auth.html";
+    }
+
+  if (localStorage.getItem("loggedIn") !== "true") {
+    window.location.href = "auth.html";
+  }
+
+  </script>
+  <div class="index-container">
+    <h1>Welcome to BizVitals 360</h1>
+    <p>Click below to begin your Business Health Assessment.</p>
+    <a href="assessment.html" class="start-btn">Start Assessment</a>
+  </div>
+</body>
+</html>

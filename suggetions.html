@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BizVitals 360 – Suggestions</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f8ff;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #0d47a1;
+    }
+    .suggestion {
+      background: #fff;
+      padding: 20px;
+      margin: 20px auto;
+      border-radius: 10px;
+      max-width: 900px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .suggestion h2 {
+      color: #1565c0;
+    }
+    .summary {
+      background: #e1f5fe;
+      padding: 15px;
+      margin-top: 40px;
+      border-left: 5px solid #0288d1;
+    }
+  </style>
+</head>
+<body>
+
+<h1>📊 Suggestions & Action Plan</h1>
+
+<div id="suggestionContainer"></div>
+
+<div class="summary">
+  <h2>📌 Overall Note</h2>
+  <p>This action plan is tailored to your lowest scoring areas.</p>
+  <p>We recommend starting with the categories shown above, and reviewing progress monthly.</p>
+</div>
+
+<script>
+  const suggestions = {
+    strategy: {
+      insight: "No clear long-term direction.",
+      issues: "No strategic planning or KPIs.",
+      suggestion: "Create a 1-year roadmap.",
+      fix: "Review it monthly and set measurable targets."
+    },
+    marketing: {
+      insight: "Low brand awareness or poor outreach.",
+      issues: "Unclear channels or targeting.",
+      suggestion: "Focus on building social proof and engagement.",
+      fix: "Leverage Instagram, WhatsApp, and local SEO."
+    },
+    operations: {
+      insight: "Delays in delivery or coordination issues.",
+      issues: "Manual processes or lack of SOPs.",
+      suggestion: "Automate and define workflows clearly.",
+      fix: "Use project tools like Trello or Notion for tracking."
+    },
+    finance: {
+      insight: "Expenses may be misaligned or uncontrolled.",
+      issues: "Lack of budgeting or cashflow tracking.",
+      suggestion: "Build a financial dashboard.",
+      fix: "Use tools like Zoho Books to forecast."
+    },
+    people: {
+      insight: "Possible lack of skilled staff or high attrition.",
+      issues: "Weak recruitment or training system.",
+      suggestion: "Create onboarding process and host regular workshops.",
+      fix: "Use an LMS and track quarterly performance goals."
+    }
+  };
+
+  const weakCategories = JSON.parse(localStorage.getItem('weakCategories')) || [];
+  console.log("Loaded weakCategories:", weakCategories);
+  const container = document.getElementById('suggestionContainer');
+
+  if (weakCategories.length === 0) {
+    container.innerHTML = "<p style='text-align:center;'>🎉 Great job! No major issues found.</p>";
+  } else {
+    weakCategories.forEach(cat => {
+      const s = suggestions[cat];
+      if (s) {
+        const block = document.createElement('div');
+        block.className = 'suggestion';
+        block.innerHTML = `
+          <h2>${cat.charAt(0).toUpperCase() + cat.slice(1)}</h2>
+          <p><strong>Insight:</strong> ${s.insight}</p>
+          <p><strong>Issue:</strong> ${s.issues}</p>
+          <p><strong>Suggestion:</strong> ${s.suggestion}</p>
+          <p><strong>Fix:</strong> ${s.fix}</p>
+        `;
+        container.appendChild(block);
+      } else {
+        console.warn("No suggestions found for:", cat);
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

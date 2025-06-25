@@ -1,0 +1,245 @@
+<!-- assessment.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BizVitals 360 – Assessment</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f7fa;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #004f99;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .category-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 20px;
+      flex-wrap: wrap;
+    }
+    .category-buttons button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 25px;
+      background: #0073cf;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .question-container {
+      display: none;
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+    .question-container.active {
+      display: block;
+    }
+    .question {
+      background: white;
+      margin-bottom: 15px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    .btn-submit, .btn-next {
+      display: block;
+      margin: 30px auto 10px;
+      padding: 12px 30px;
+      font-size: 16px;
+      border: none;
+      border-radius: 30px;
+      background: #28a745;
+      color: white;
+      cursor: pointer;
+    }
+    .btn-draft {
+      display: block;
+      margin: 10px auto 40px;
+      padding: 10px 28px;
+      font-size: 16px;
+      border: none;
+      border-radius: 30px;
+      background: #ffc107;
+      color: black;
+      cursor: pointer;
+    }
+    .progress-bar-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 10px 20px;
+    }
+    #progress-bar {
+      height: 20px;
+      width: 0%;
+      background: #28a745;
+      border-radius: 10px;
+      transition: width 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>BizVitals 360 – Business Health Assessment</h1>
+</header>
+
+<div class="category-buttons">
+  <button onclick="showCategory('strategy')">Strategy</button>
+  <button onclick="showCategory('marketing')">Marketing</button>
+  <button onclick="showCategory('operations')">Operations</button>
+  <button onclick="showCategory('finance')">Finance</button>
+  <button onclick="showCategory('people')">People</button>
+</div>
+
+<div class="progress-bar-container">
+  <label>Progress: <span id="progress-count">0</span> / 30 answered</label>
+  <div style="background: #ddd; border-radius: 10px;">
+    <div id="progress-bar"></div>
+  </div>
+</div>
+
+<form id="assessment-form"></form>
+
+<script>
+  function showCategory(id) {
+    document.querySelectorAll('.question-container').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  const categories = ["strategy", "marketing", "operations", "finance", "people"];
+  const questions = [
+    "Do you have a clearly defined business strategy?",
+    "Is your mission and vision statement documented and communicated?",
+    "Are your strategic goals reviewed annually?",
+    "Do you assess competition regularly?",
+    "Is there a documented business continuity plan?",
+    "Do you have a marketing plan?",
+    "Are your marketing campaigns data-driven?",
+    "Do you track marketing ROI?",
+    "Is your brand identity consistent?",
+    "Do you leverage digital marketing channels?",
+    "Are your core processes documented?",
+    "Do you use KPIs to track performance?",
+    "Is customer feedback integrated into operations?",
+    "Are standard operating procedures followed?",
+    "Do you have quality assurance mechanisms?",
+    "Do you have a budgeting process?",
+    "Are financial reports generated monthly?",
+    "Do you conduct regular financial audits?",
+    "Is cash flow monitored weekly?",
+    "Are financial risks assessed periodically?",
+    "Do you have an HR policy in place?",
+    "Are employee roles and responsibilities documented?",
+    "Do you conduct performance reviews?",
+    "Are you compliant with local labor laws?",
+    "Do you have a training and development plan?",
+    "Is employee feedback gathered regularly?",
+    "Is workplace safety assessed periodically?",
+    "Are employee grievances addressed promptly?",
+    "Do you maintain employee records digitally?",
+    "Are policies reviewed and updated annually?"
+  ];
+
+  const form = document.getElementById("assessment-form");
+  let questionCount = 0;
+
+  categories.forEach((category, index) => {
+    const container = document.createElement("div");
+    container.classList.add("question-container");
+    container.id = category;
+
+    for (let i = 0; i < 6 && questionCount < 30; i++) {
+      const num = questionCount + 1;
+      const q = questions[questionCount];
+      const div = document.createElement("div");
+      div.classList.add("question");
+      div.innerHTML = `
+        <p><strong>${num}. ${q}</strong></p>
+        <label><input type="radio" name="q${num}" value="Yes"> Yes</label><br>
+        <label><input type="radio" name="q${num}" value="No"> No</label><br>
+        <label><input type="radio" name="q${num}" value="In Process"> In Process</label><br>
+        <label><input type="radio" name="q${num}" value="Not Applicable"> Not Applicable</label>
+      `;
+      container.appendChild(div);
+      questionCount++;
+    }
+
+    if (index < categories.length - 1) {
+      const nextButton = document.createElement("button");
+      nextButton.type = "button";
+      nextButton.className = "btn-next";
+      nextButton.textContent = "Next Category";
+      nextButton.addEventListener("click", () => {
+        showCategory(categories[index + 1]);
+      });
+      container.appendChild(nextButton);
+    }
+
+    form.appendChild(container);
+  });
+
+  form.innerHTML += `
+    <button type="submit" class="btn-submit">Submit Assessment</button>
+    <button type="button" class="btn-draft" onclick="saveDraft()">Save Draft / Finish Later</button>
+  `;
+
+  function updateProgress() {
+    let answered = 0;
+    for (let i = 1; i <= 30; i++) {
+      if (document.querySelector(`input[name="q${i}"]:checked`)) answered++;
+    }
+    document.getElementById("progress-count").textContent = answered;
+    document.getElementById("progress-bar").style.width = (answered / 30 * 100) + "%";
+  }
+
+  document.addEventListener("change", updateProgress);
+
+  function saveDraft() {
+    const draft = {};
+    for (let i = 1; i <= 30; i++) {
+      const checked = document.querySelector(`input[name="q${i}"]:checked`);
+      if (checked) draft[`q${i}`] = checked.value;
+    }
+    localStorage.setItem("assessmentDraft", JSON.stringify(draft));
+    alert("Draft saved successfully.");
+  }
+
+  window.onload = function () {
+    const draft = JSON.parse(localStorage.getItem("assessmentDraft"));
+    if (draft) {
+      for (let key in draft) {
+        const radio = document.querySelector(`input[name="${key}"][value="${draft[key]}"]`);
+        if (radio) radio.checked = true;
+      }
+    }
+    updateProgress();
+    showCategory("strategy");
+  };
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const answers = {};
+    for (let i = 1; i <= 30; i++) {
+      const selected = document.querySelector(`input[name="q${i}"]:checked`);
+      if (!selected) {
+        alert(`Please answer question ${i}`);
+        return;
+      }
+      answers[`q${i}`] = selected.value;
+    }
+    localStorage.setItem("assessmentAnswers", JSON.stringify(answers));
+    window.location.href = "result.html";
+  });
+</script>
+</body>
+</html>
